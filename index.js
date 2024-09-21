@@ -1,7 +1,9 @@
 const express = require("express");
 const morgan = require("morgan");
-const app = express();
+const cors = require("cors");
 
+const app = express();
+app.use(cors());
 morgan.token("post-data", (req, res) => {
   if (req.method == "POST") {
     return JSON.stringify(req.body);
@@ -64,8 +66,11 @@ app.get(`${PERSON_API_ROUTE}/:id`, (request, response) => {
 
 app.delete(`${PERSON_API_ROUTE}/:id`, (request, response) => {
   const id = request.params.id;
+  removedPerson = persons.filter((p) => p.id === id)[0];
+  console.log(`removed persond: ${JSON.stringify(removedPerson)}`);
+
   persons = persons.filter((p) => p.id !== id);
-  response.status(204).end();
+  response.status(200).send(removedPerson);
 });
 
 app.get("/info", (request, response) => {
